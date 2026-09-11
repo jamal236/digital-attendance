@@ -641,10 +641,10 @@ function buatSesi() {
      * Contoh:
      * http://192.168.100.144:5500/student.html?session=...
      */
-    const sessionUrl =
-        `${window.location.origin}/student.html?session=${encodeURIComponent(
-            JSON.stringify(sesiAktif)
-        )}`;
+const sessionUrl =
+    `${window.location.origin}/digital-attendance/student.html?session=${encodeURIComponent(
+        JSON.stringify(sesiAktif)
+    )}`;
 
     // Buat QR sesi
     new QRCode(qrContainer, {
