@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Digital Attendance</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+    <header class="header">
+
+        <div class="brand">
+            <div class="brand-logo">DA</div>
+
+            <div>
+                <h1>Digital Attendance</h1>
+                <p>Presensi Mahasiswa</p>
+            </div>
+        </div>
+
+        <div class="connection">
+            <span class="status-dot"></span>
+            <span>Terhubung</span>
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+    <main class="container">
+
+        <!-- HERO -->
+        <section class="hero">
+
+            <div class="hero-text">
+
+                <span class="badge">
+                    SISTEM PRESENSI DIGITAL
+                </span>
+
+                <h2>
+                    Kelola kehadiran mahasiswa
+                    dengan lebih mudah.
+                </h2>
+
+                <p>
+                    Gunakan QR Code untuk melakukan
+                    presensi secara cepat dan praktis.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= QR SESI ================= -->
+        <section class="card session-card">
+
+            <div class="card-header">
+
+                <div class="header-icon">
+                    ◈
+                </div>
+
+                <div>
+                    <h3>QR Presensi Kelas</h3>
+
+                    <p>
+                        QR Code untuk membuka sesi presensi
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="session-content">
+
+<div class="qr-placeholder">
+
+    <div id="classQRCode" class="class-qr"></div>
+
+</div>
+
+                <div class="session-info">
+
+                    <h4>Sesi Presensi Aktif</h4>
+
+                    <p>
+                        Tampilkan QR Code ini kepada
+                        mahasiswa untuk melakukan presensi.
+                    </p>
+
+                    <div class="session-details">
+
+                        <div>
+                            <span>Mata Kuliah</span>
+                            <strong>Pemrograman Web</strong>
+                        </div>
+
+                        <div>
+                            <span>Kelas</span>
+                            <strong>3</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="button-group">
+
+<button
+    class="btn primary"
+    onclick="buatSesi()"
+>
+    Buat Sesi
+</button>
+
+                        <button class="btn secondary">
+                            Download QR
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SCAN ================= -->
+        <section class="card scan-card">
+
+            <div class="card-header">
+
+                <div class="header-icon">
+                    ◉
+                </div>
+
+                <div>
+                    <h3>Scan Presensi</h3>
+
+                    <p>
+                        Scan QR mahasiswa untuk mencatat kehadiran
+                    </p>
+                </div>
+
+            </div>
+
+
+<div class="scan-area">
+
+    <div id="reader"></div>
+
+    <div class="scanner-controls">
+
+        <button
+            class="btn primary"
+            onclick="mulaiScanner()"
+            id="startScanBtn"
+        >
+            📷 Mulai Scan
+        </button>
+
+        <button
+            class="btn secondary"
+            onclick="document.getElementById('qrFile').click()"
+        >
+            🖼️ Upload QR
+        </button>
+
+        <button
+            class="btn secondary"
+            onclick="stopScanner()"
+            id="stopScanBtn"
+            style="display: none;"
+        >
+            ■ Stop Scan
+        </button>
+
+    </div>
+
+    <input
+        type="file"
+        id="qrFile"
+        accept="image/*"
+        style="display: none;"
+        onchange="scanDariGambar(event)"
+    >
+
+    <div id="scanResult"></div>
+
+</div>
+
+        </section>
+
+
+        <!-- ================= GENERATE QR ================= -->
+        <section class="card generate-card">
+
+            <div class="card-header">
+
+                <div class="header-icon">
+                    ✦
+                </div>
+
+                <div>
+                    <h3>Generate QR Mahasiswa</h3>
+
+                    <p>
+                        Buat QR Code berdasarkan NIM mahasiswa
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="generate-form">
+
+    <label for="nim">
+        NIM Mahasiswa
+    </label>
+
+    <div class="input-row">
+
+        <input
+            type="text"
+            id="nim"
+            placeholder="Contoh: 2024001"
+        >
+
+        <button class="btn primary" onclick="generateQR()">
+            Generate QR
+        </button>
+
+    </div>
+
+
+    <!-- HASIL QR MAHASISWA -->
+
+    <div id="studentQRResult" class="student-qr-result">
+
+        <div id="studentQRCode"></div>
+
+        <div id="studentInfo"></div>
+
+    </div>
+
+</div>
+        </section>
+
+
+        <!-- ================= DATA MAHASISWA ================= -->
+        <section class="card students-card">
+
+            <div class="card-header">
+
+                <div class="header-icon">
+                    ☷
+                </div>
+
+                <div>
+                    <h3>Daftar Mahasiswa</h3>
+
+                    <p>
+                        Data mahasiswa yang terdaftar
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>NIM</th>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Jurusan</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+<tbody id="mahasiswaTableBody">
+</tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+
+        <p>
+            Digital Attendance © 2026
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Presensi Mahasiswa</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <!-- QR Scanner -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+         ========================= -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                DA
+            </div>
+
+            <div>
+
+                <h1>
+                    Digital Attendance
+                </h1>
+
+                <p>
+                    Presensi Mahasiswa
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================
+         MAIN
+         ========================= -->
+
+    <main class="container">
+
+
+        <!-- SESSION -->
+
+        <section class="hero">
+
+            <span class="badge">
+                SESI PRESENSI
+            </span>
+
+            <h2>
+                Presensi Kelas
+            </h2>
+
+            <p>
+                Silakan lakukan presensi
+                untuk mengikuti kelas.
+            </p>
+
+        </section>
+
+
+
+        <!-- SESSION INFORMATION -->
+
+        <section
+            class="card"
+            id="sessionCard"
+        >
+
+            <div class="card-header">
+
+                <div class="header-icon">
+                    ◈
+                </div>
+
+                <div>
+
+                    <h3>
+                        Informasi Sesi
+                    </h3>
+
+                    <p>
+                        Detail kelas yang sedang berlangsung
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="session-details"
+                id="sessionInfo"
+            >
+
+                <div>
+
+                    <span>
+                        Mata Kuliah
+                    </span>
+
+                    <strong id="mataKuliah">
+                        Memuat...
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Kelas
+                    </span>
+
+                    <strong id="kelas">
+                        Memuat...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             SCAN MAHASISWA
+             ========================= -->
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div class="header-icon">
+                    ◉
+                </div>
+
+                <div>
+
+                    <h3>
+                        Identifikasi Mahasiswa
+                    </h3>
+
+                    <p>
+                        Scan QR Code mahasiswa
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="scan-area">
+
+
+                <div id="studentReader"></div>
+
+
+                <div class="scanner-controls">
+
+                    <button
+                        class="btn primary"
+                        onclick="mulaiScanMahasiswa()"
+                        id="studentStartBtn"
+                    >
+                        📷 Scan QR Mahasiswa
+                    </button>
+
+
+                    <button
+                        class="btn secondary"
+                        onclick="stopScanMahasiswa()"
+                        id="studentStopBtn"
+                        style="display:none;"
+                    >
+                        ■ Stop Scan
+                    </button>
+
+                </div>
+
+
+                <div id="studentResult"></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             MANUAL NIM
+             ========================= -->
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div class="header-icon">
+                    #
+                </div>
+
+                <div>
+
+                    <h3>
+                        Alternatif NIM
+                    </h3>
+
+                    <p>
+                        Jika QR mahasiswa tidak tersedia
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="generate-form">
+
+                <label for="manualNim">
+                    NIM Mahasiswa
+                </label>
+
+
+                <div class="input-row">
+
+                    <input
+                        type="text"
+                        id="manualNim"
+                        placeholder="Masukkan NIM"
+                    >
+
+
+                    <button
+                        class="btn primary"
+                        onclick="cekNIM()"
+                    >
+                        Cek NIM
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <footer>
+
+        <p>
+            Digital Attendance © 2026
+        </p>
+
+    </footer>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+         ========================= -->
+
+    <script>
+
+        // ==========================================
+        // DATA MAHASISWA SEMENTARA
+        // ==========================================
+
+        const mahasiswa = [
+
+            {
+                nim: "2023032",
+                nama: "Alfisyahrina",
+                kelas: "3",
+                jurusan: "Teknik Informatika"
+            },
+
+            {
+                nim: "2024001",
+                nama: "Khairul Munandar",
+                kelas: "2",
+                jurusan: "Teknik Informatika"
+            }
+
+        ];
+
+
+        // ==========================================
+        // AMBIL DATA SESI DARI URL
+        // ==========================================
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const sessionData =
+            params.get("session");
+
+
+        let sesi = null;
+
+
+        if (sessionData) {
+
+            try {
+
+                sesi =
+                    JSON.parse(
+                        decodeURIComponent(
+                            sessionData
+                        )
+                    );
+
+            } catch (error) {
+
+                console.error(
+                    "Sesi tidak valid",
+                    error
+                );
+
+            }
+
+        }
+
+
+        // ==========================================
+        // TAMPILKAN SESI
+        // ==========================================
+
+        if (sesi) {
+
+            document.getElementById(
+                "mataKuliah"
+            ).textContent =
+                sesi.mata_kuliah;
+
+
+            document.getElementById(
+                "kelas"
+            ).textContent =
+                sesi.kelas;
+
+        } else {
+
+            document.getElementById(
+                "mataKuliah"
+            ).textContent =
+                "Sesi tidak ditemukan";
+
+
+            document.getElementById(
+                "kelas"
+            ).textContent =
+                "-";
+
+        }
+
+
+
+        // ==========================================
+        // SCANNER
+        // ==========================================
+
+        let studentScanner = null;
+
+
+
+        function mulaiScanMahasiswa() {
+
+            studentScanner =
+                new Html5Qrcode(
+                    "studentReader"
+                );
+
+
+            studentScanner.start(
+
+                {
+                    facingMode: "environment"
+                },
+
+                {
+                    fps: 10,
+
+                    qrbox: {
+                        width: 250,
+                        height: 250
+                    }
+                },
+
+
+                function(decodedText) {
+
+                    prosesQRMahasiswa(
+                        decodedText
+                    );
+
+                },
+
+
+                function(errorMessage) {
+
+                    // Jangan tampilkan error
+                    // setiap frame
+
+                }
+
+            )
+            .then(function() {
+
+                document.getElementById(
+                    "studentStartBtn"
+                ).style.display =
+                    "none";
+
+
+                document.getElementById(
+                    "studentStopBtn"
+                ).style.display =
+                    "inline-block";
+
+            })
+            .catch(function(error) {
+
+                console.error(error);
+
+                tampilkanHasil(
+                    "error",
+                    "Kamera tidak dapat digunakan."
+                );
+
+            });
+
+        }
+
+
+
+        // ==========================================
+        // STOP SCANNER
+        // ==========================================
+
+        function stopScanMahasiswa() {
+
+            if (!studentScanner) {
+                return;
+            }
+
+
+            studentScanner
+                .stop()
+                .then(function() {
+
+                    studentScanner.clear();
+
+                    studentScanner = null;
+
+
+                    document.getElementById(
+                        "studentStartBtn"
+                    ).style.display =
+                        "inline-block";
+
+
+                    document.getElementById(
+                        "studentStopBtn"
+                    ).style.display =
+                        "none";
+
+                });
+
+        }
+
+
+
+        // ==========================================
+        // PROSES QR MAHASISWA
+        // ==========================================
+
+        function prosesQRMahasiswa(
+            decodedText
+        ) {
+
+            let data;
+
+
+            try {
+
+                data =
+                    JSON.parse(
+                        decodedText
+                    );
+
+            } catch (error) {
+
+                tampilkanHasil(
+                    "error",
+                    "QR mahasiswa tidak valid."
+                );
+
+                return;
+
+            }
+
+
+            // Cari mahasiswa
+
+            const mahasiswaDitemukan =
+                mahasiswa.find(
+                    student =>
+                        student.nim === data.nim
+                );
+
+
+            if (!mahasiswaDitemukan) {
+
+                tampilkanHasil(
+                    "error",
+                    "Mahasiswa tidak terdaftar."
+                );
+
+                return;
+
+            }
+
+
+            // Pastikan kelas sesuai
+
+            if (
+                sesi &&
+                sesi.kelas !== "Semua" &&
+                mahasiswaDitemukan.kelas !==
+                    sesi.kelas
+            ) {
+
+                tampilkanHasil(
+                    "error",
+                    "Mahasiswa bukan dari kelas ini."
+                );
+
+                return;
+
+            }
+
+
+            // Berhasil
+
+            tampilkanHasil(
+                "success",
+                mahasiswaDitemukan
+            );
+
+
+            stopScanMahasiswa();
+
+        }
+
+
+
+        // ==========================================
+        // TAMPILKAN HASIL
+        // ==========================================
+
+        function tampilkanHasil(
+            type,
+            data
+        ) {
+
+            const result =
+                document.getElementById(
+                    "studentResult"
+                );
+
+
+            if (type === "error") {
+
+                result.innerHTML = `
+
+                    <div class="scan-error">
+
+                        ❌ ${data}
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            result.innerHTML = `
+
+                <div class="scan-success">
+
+                    <h4>
+                        ✓ IDENTITAS DITEMUKAN
+                    </h4>
+
+                    <p>
+                        <strong>
+                            ${data.nama}
+                        </strong>
+                    </p>
+
+                    <p>
+                        NIM: ${data.nim}
+                    </p>
+
+                    <p>
+                        Kelas: ${data.kelas}
+                    </p>
+
+                    <p>
+                        ${data.jurusan}
+                    </p>
+
+
+                    <button
+                        class="btn primary"
+                        onclick="konfirmasiHadir()"
+                        style="margin-top:18px;"
+                    >
+                        ✓ Konfirmasi Hadir
+                    </button>
+
+                </div>
+
+            `;
+
+
+            window.mahasiswaTerpilih =
+                data;
+
+        }
+
+
+
+        // ==========================================
+        // KONFIRMASI HADIR
+        // ==========================================
+
+        function konfirmasiHadir() {
+
+    if (!window.mahasiswaTerpilih) {
+        return;
+    }
+
+    const data = window.mahasiswaTerpilih;
+
+    // URL Apps Script
+    const API_URL =
+        "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
+
+    // Data yang dikirim ke Google Sheet
+    const presensi = {
+        waktu: new Date().toISOString(),
+        nim: data.nim,
+        nama: data.nama,
+        kelas: data.kelas,
+        jurusan: data.jurusan,
+        mata_kuliah: sesi ? sesi.mata_kuliah : "Pemrograman Web",
+        status: "HADIR"
+    };
+
+    // Kirim ke Apps Script
+fetch(API_URL, {
+
+    method: "POST",
+
+    mode: "no-cors",
+
+    headers: {
+        "Content-Type":
+            "application/x-www-form-urlencoded"
+    },
+
+    body:
+        "nim=" +
+        encodeURIComponent(presensi.nim) +
+
+        "&mata_kuliah=" +
+        encodeURIComponent(presensi.mata_kuliah) +
+
+        "&status=" +
+        encodeURIComponent(presensi.status)
+
+})
+    .then(function () {
+
+        // Tampilkan berhasil
+        const result =
+            document.getElementById("studentResult");
+
+        result.innerHTML = `
+
+            <div class="scan-success">
+
+                <h4>
+                    ✓ HADIR
+                </h4>
+
+                <p>
+                    <strong>${data.nama}</strong>
+                </p>
+
+                <p>
+                    NIM: ${data.nim}
+                </p>
+
+                <p>
+                    Presensi berhasil dicatat.
+                </p>
+
+            </div>
+
+        `;
+
+        console.log("PRESENSI TERKIRIM:", presensi);
+
+    })
+    .catch(function (error) {
+
+        console.error(
+            "Gagal mengirim presensi:",
+            error
+        );
+
+        tampilkanHasil(
+            "error",
+            "Gagal mengirim presensi ke Google Sheet."
+        );
+
+    });
+
+}
+
+
+        // ==========================================
+        // CEK NIM MANUAL
+        // ==========================================
+
+        function cekNIM() {
+
+            const nim =
+                document
+                    .getElementById(
+                        "manualNim"
+                    )
+                    .value
+                    .trim();
+
+
+            const data =
+                mahasiswa.find(
+                    student =>
+                        student.nim === nim
+                );
+
+
+            if (!data) {
+
+                tampilkanHasil(
+                    "error",
+                    "NIM tidak terdaftar."
+                );
+
+                return;
+
+            }
+
+
+            prosesQRMahasiswa(
+                JSON.stringify(data)
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>
