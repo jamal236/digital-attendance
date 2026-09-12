@@ -265,6 +265,8 @@ async function mulaiScanner() {
 
             (decodedText) => {
 
+                       console.log("ISI QR TERBACA:", decodedText);
+
                 berhasilScan(decodedText);
 
             },
