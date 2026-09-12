@@ -997,7 +997,7 @@ function buatSesi() {
 
 
     // Data sesi presensi
-    sesiAktif = {
+    window.sesiAktif = {
 
         type: "SESSION",
 
