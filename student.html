@@ -588,11 +588,12 @@ if (window.sesiAktif) {
 
             // Cari mahasiswa
 
-            const mahasiswaDitemukan =
-                mahasiswa.find(
-                    student =>
-                        student.nim === data.nim
-                );
+  const mahasiswaDitemukan =
+    mahasiswa.find(
+        student =>
+            String(student.nim).trim() ===
+            String(data.nim).trim()
+    );
 
 
             if (!mahasiswaDitemukan) {
