@@ -16,7 +16,7 @@ let mahasiswa = [];
 // ===============================
 
 const LINK_SHEET =
-    "https://docs.google.com/spreadsheets/d/1PXOSZAXZNg7hvX-33DglZlM3saj4yclUhiYepiFNYhI/edit?gid=646034675#gid=646034675";
+    https://docs.google.com/spreadsheets/d/11tIbv7YAJeg41v9dxwNY2izZPNG3JtA7TrM9QTG4i6Y/edit
 
 const API_URL =
     "https://script.google.com/macros/s/AKfycbyUT42QkL-FU_sJn_TdDMQyBL9ZBZiygSPE_DFwLpKVRQ2xuFtYZfqtWQcO4eIvmQRhfg/exec";
