@@ -289,28 +289,78 @@
 
     <script>
 
-        // ==========================================
-        // DATA MAHASISWA SEMENTARA
-        // ==========================================
+// ==========================================
+// DATA MAHASISWA DARI GOOGLE SHEET
+// ==========================================
 
-        const mahasiswa = [
+let mahasiswa = [];
 
-            {
-                nim: "2023032",
-                nama: "Alfisyahrina",
-                kelas: "3",
-                jurusan: "Teknik Informatika"
-            },
+const API_MAHASISWA =
+    "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
 
-            {
-                nim: "2024001",
-                nama: "Khairul Munandar",
-                kelas: "2",
-                jurusan: "Teknik Informatika"
-            }
 
-        ];
+function loadMahasiswa() {
 
+    const callbackName =
+        "studentMahasiswaCallback_" + Date.now();
+
+    const script =
+        document.createElement("script");
+
+    window[callbackName] = function(data) {
+
+        console.log(
+            "DATA MAHASISWA STUDENT:",
+            data
+        );
+
+        mahasiswa = data.map(function(m) {
+
+            return {
+                nim: String(m.nim),
+                nama: m.nama,
+                kelas: String(m.kelas),
+                jurusan: m.jurusan,
+                status: m.status
+            };
+
+        });
+
+        console.log(
+            "MAHASISWA SIAP:",
+            mahasiswa
+        );
+
+        delete window[callbackName];
+
+        script.remove();
+    };
+
+
+    script.src =
+        API_MAHASISWA +
+        "?callback=" +
+        callbackName;
+
+
+    script.onerror = function() {
+
+        console.error(
+            "Gagal mengambil data mahasiswa."
+        );
+
+        delete window[callbackName];
+
+        script.remove();
+    };
+
+
+    document.body.appendChild(script);
+}
+
+
+// Ambil data saat halaman dibuka
+loadMahasiswa();
 
         // ==========================================
         // AMBIL DATA SESI DARI URL
