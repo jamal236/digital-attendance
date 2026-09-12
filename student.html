@@ -384,12 +384,8 @@ if (sessionData) {
 
     try {
 
-        window.sesiAktif =
-            JSON.parse(
-                decodeURIComponent(
-                    sessionData
-                )
-            );
+window.sesiAktif =
+    JSON.parse(sessionData);
 
         console.log(
             "Data sesi berhasil dibaca:",
