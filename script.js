@@ -1022,7 +1022,7 @@ function buatSesi() {
 // DOWNLOAD QR SESI
 // ===============================
 
-function downloadQR() {
+window.downloadQR = function() {
 
     const qrContainer =
         document.getElementById("classQRCode");
@@ -1064,7 +1064,7 @@ function downloadQR() {
     link.click();
 
     document.body.removeChild(link);
-}
+};
 
     // ===============================
 // TUTUP SESI
