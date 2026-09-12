@@ -30,31 +30,43 @@ function loadMahasiswa() {
     const callbackName =
         "mahasiswaCallback_" + Date.now();
 
+    const script =
+        document.createElement("script");
+
     window[callbackName] = function(data) {
 
-        mahasiswa = data.map(m => ({
-            ...m,
-            nim: String(m.nim),
-            kelas: String(m.kelas)
-        }));
+        console.log(
+            "DATA DARI GOOGLE SHEET:",
+            data
+        );
+
+        mahasiswa = data.map(function(m) {
+
+            return {
+                nim: String(m.nim),
+                nama: m.nama,
+                kelas: String(m.kelas),
+                jurusan: m.jurusan,
+                status: m.status
+            };
+
+        });
 
         console.log(
-            "Data mahasiswa berhasil diambil:",
+            "DATA MAHASISWA:",
             mahasiswa
         );
 
         tampilkanDaftarMahasiswa();
 
         delete window[callbackName];
+
         script.remove();
     };
 
-    const script =
-        document.createElement("script");
-
     script.src =
         API_URL +
-        "?action=mahasiswa&callback=" +
+        "?callback=" +
         callbackName;
 
     script.onerror = function() {
@@ -68,6 +80,7 @@ function loadMahasiswa() {
         );
 
         delete window[callbackName];
+
         script.remove();
     };
 
@@ -878,3 +891,5 @@ function updateJadwal() {
     ruangInput.value = data.ruang;
 
 }
+
+loadMahasiswa();
