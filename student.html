@@ -604,12 +604,25 @@ function prosesQRMahasiswa(decodedText) {
         mahasiswaDitemukan
     );
 
- // Cek kelas
+// Pastikan kelas sesuai
+if (window.sesiAktif) {
+
+    const kelasMahasiswa =
+        String(mahasiswaDitemukan.kelas)
+            .trim()
+            .replace("V.", "");
+
+    const kelasSesi =
+        String(window.sesiAktif.kelas)
+            .trim()
+            .replace("V.", "");
+
+    console.log("Kelas mahasiswa:", kelasMahasiswa);
+    console.log("Kelas sesi:", kelasSesi);
+
     if (
-        window.sesiAktif &&
-        window.sesiAktif.kelas !== "Semua" &&
-        String(mahasiswaDitemukan.kelas).trim() !==
-        String(window.sesiAktif.kelas).trim()
+        kelasSesi !== "Semua" &&
+        kelasMahasiswa !== kelasSesi
     ) {
 
         tampilkanHasil(
@@ -619,6 +632,7 @@ function prosesQRMahasiswa(decodedText) {
 
         return;
     }
+}
 
     // Simpan mahasiswa yang ditemukan
     window.mahasiswaTerpilih =
