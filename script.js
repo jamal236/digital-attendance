@@ -1051,8 +1051,10 @@ function buatSesi() {
 
 
     // Alamat halaman mahasiswa
-    const sessionUrl =
-        `${window.location.origin}/digital-attendance/student.html?session=${encodeURIComponent(
+const sessionUrl =
+    `${window.location.origin}${window.location.pathname
+        .replace("index.html", "")
+        .replace(/\/$/, "")}/student.html?session=${encodeURIComponent(
             JSON.stringify(sesiAktif)
         )}`;
 
