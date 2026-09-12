@@ -1,0 +1,1234 @@
+/* =========================================================
+   DIGITAL ATTENDANCE
+   STYLE.CSS
+   ========================================================= */
+
+
+/* =========================
+   RESET
+   ========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    font-family:
+        Inter,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    background: #f4f6f8;
+    color: #17202a;
+
+    min-height: 100vh;
+}
+
+
+/* =========================
+   HEADER
+   ========================= */
+
+.header {
+    width: 100%;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    padding: 20px 7%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 100;
+}
+
+
+.brand {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+}
+
+
+.brand-logo {
+    width: 48px;
+    height: 48px;
+
+    background: #17202a;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.brand h1 {
+    font-size: 20px;
+    font-weight: 800;
+
+    color: #17202a;
+}
+
+
+.brand p {
+    margin-top: 3px;
+
+    font-size: 13px;
+
+    color: #7b8794;
+}
+
+
+.connection {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #4b5563;
+}
+
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+
+    background: #22c55e;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+
+/* =========================
+   MAIN CONTAINER
+   ========================= */
+
+.container {
+    width: min(1180px, 86%);
+
+    margin: 0 auto;
+
+    padding: 55px 0 80px;
+}
+
+
+/* =========================
+   HERO
+   ========================= */
+
+.hero {
+    margin-bottom: 32px;
+}
+
+
+.hero-text {
+    max-width: 720px;
+}
+
+
+.badge {
+    display: inline-block;
+
+    padding: 8px 13px;
+
+    background: #e9eef3;
+
+    border: 1px solid #dce3e9;
+
+    border-radius: 999px;
+
+    color: #45525e;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.hero h2 {
+    margin-top: 18px;
+
+    font-size: clamp(32px, 5vw, 54px);
+
+    line-height: 1.05;
+
+    letter-spacing: -2px;
+
+    color: #111827;
+}
+
+
+.hero p {
+    margin-top: 18px;
+
+    max-width: 600px;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+
+    color: #6b7280;
+}
+
+
+/* =========================
+   CARD
+   ========================= */
+
+.card {
+    background: #ffffff;
+
+    border: 1px solid #e4e8ec;
+
+    border-radius: 20px;
+
+    padding: 28px;
+
+    margin-top: 22px;
+
+    box-shadow:
+        0 8px 30px rgba(15, 23, 42, 0.04);
+}
+
+
+.card-header {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 25px;
+}
+
+
+.header-icon {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: #17202a;
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 19px;
+    font-weight: 700;
+}
+
+
+.card-header h3 {
+    font-size: 19px;
+
+    font-weight: 800;
+
+    color: #17202a;
+}
+
+
+.card-header p {
+    margin-top: 4px;
+
+    font-size: 13px;
+
+    color: #7b8794;
+}
+
+
+/* =========================
+   SESSION CARD
+   ========================= */
+
+.session-content {
+    display: grid;
+
+    grid-template-columns: 360px 1fr;
+
+    gap: 40px;
+
+    align-items: center;
+}
+
+
+.qr-placeholder {
+    min-height: 360px;
+
+    border-radius: 18px;
+
+    background: #f7f8fa;
+
+    border: 1px dashed #cbd5df;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.qr-box {
+    width: 270px;
+    height: 270px;
+
+    background:
+        linear-gradient(
+            45deg,
+            #111827 25%,
+            transparent 25%
+        ),
+        linear-gradient(
+            -45deg,
+            #111827 25%,
+            transparent 25%
+        ),
+        linear-gradient(
+            45deg,
+            transparent 75%,
+            #111827 75%
+        ),
+        linear-gradient(
+            -45deg,
+            transparent 75%,
+            #111827 75%
+        );
+
+    background-size: 36px 36px;
+
+    background-position:
+        0 0,
+        0 18px,
+        18px -18px,
+        -18px 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 12px solid #ffffff;
+
+    box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.08);
+
+    color: transparent;
+}
+
+
+.session-info h4 {
+    font-size: 26px;
+
+    color: #111827;
+}
+
+
+.session-info > p {
+    margin-top: 10px;
+
+    max-width: 520px;
+
+    line-height: 1.7;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+.session-details {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+
+    margin-top: 25px;
+}
+
+
+.session-details div {
+    padding: 17px;
+
+    background: #f7f8fa;
+
+    border-radius: 12px;
+
+    border: 1px solid #edf0f2;
+}
+
+
+.session-details span {
+    display: block;
+
+    font-size: 11px;
+
+    color: #89939d;
+
+    margin-bottom: 5px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+
+    font-weight: 700;
+}
+
+
+.session-details strong {
+    font-size: 14px;
+
+    color: #26323d;
+}
+
+
+.button-group {
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 25px;
+}
+
+
+/* =========================
+   BUTTON
+   ========================= */
+
+.btn {
+    border: none;
+
+    border-radius: 11px;
+
+    padding: 13px 20px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+
+.btn.primary {
+    background: #17202a;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 7px 18px rgba(23, 32, 42, 0.16);
+}
+
+
+.btn.primary:hover {
+    background: #273541;
+}
+
+
+.btn.secondary {
+    background: #f2f4f6;
+
+    color: #374151;
+
+    border: 1px solid #e0e5e9;
+}
+
+
+.btn.secondary:hover {
+    background: #e8ebee;
+}
+
+
+/* =========================
+   SCANNER
+   ========================= */
+
+.scan-area {
+    width: 100%;
+}
+
+
+.camera-placeholder {
+    min-height: 350px;
+
+    border-radius: 18px;
+
+    background: #10151a;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 30px;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+.camera-placeholder::before {
+    content: "";
+
+    position: absolute;
+
+    width: 270px;
+    height: 270px;
+
+    border: 1px solid rgba(255,255,255,0.12);
+
+    border-radius: 20px;
+}
+
+
+.camera-icon {
+    font-size: 40px;
+
+    margin-bottom: 18px;
+}
+
+
+.camera-placeholder h4 {
+    color: #ffffff;
+
+    font-size: 18px;
+
+    z-index: 1;
+}
+
+
+.camera-placeholder p {
+    color: #9ca3af;
+
+    font-size: 13px;
+
+    margin-top: 7px;
+
+    margin-bottom: 22px;
+
+    z-index: 1;
+}
+
+
+.camera-placeholder .btn {
+    z-index: 1;
+}
+
+
+/* =========================
+   GENERATE QR
+   ========================= */
+
+.generate-form label {
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #374151;
+
+    margin-bottom: 9px;
+}
+
+
+.input-row {
+    display: flex;
+
+    gap: 12px;
+}
+
+
+.input-row input {
+    flex: 1;
+
+    height: 48px;
+
+    border-radius: 11px;
+
+    border: 1px solid #dce2e7;
+
+    outline: none;
+
+    padding: 0 15px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    color: #17202a;
+
+    background: #fafbfc;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.input-row input:focus {
+    border-color: #17202a;
+
+    box-shadow:
+        0 0 0 3px rgba(23, 32, 42, 0.08);
+}
+
+
+.input-row input::placeholder {
+    color: #a2aab2;
+}
+
+
+.input-row .btn {
+    min-width: 145px;
+}
+
+
+/* =========================
+   TABLE
+   ========================= */
+
+.table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    border: 1px solid #e6eaee;
+
+    border-radius: 14px;
+}
+
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 720px;
+}
+
+
+thead {
+    background: #f7f8fa;
+}
+
+
+th {
+    padding: 15px 18px;
+
+    text-align: left;
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+
+    color: #7b8794;
+
+    font-weight: 800;
+
+    border-bottom: 1px solid #e6eaee;
+}
+
+
+td {
+    padding: 16px 18px;
+
+    font-size: 13px;
+
+    color: #374151;
+
+    border-bottom: 1px solid #edf0f2;
+}
+
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+tbody tr {
+    transition: background 0.2s ease;
+}
+
+
+tbody tr:hover {
+    background: #fafbfc;
+}
+
+
+.status {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+
+.status.hadir {
+    background: #eaf8ef;
+
+    color: #16803c;
+}
+
+
+/* =========================
+   FOOTER
+   ========================= */
+
+footer {
+    text-align: center;
+
+    padding: 25px;
+
+    border-top: 1px solid #e5e7eb;
+
+    color: #8b949e;
+
+    font-size: 12px;
+}
+
+
+/* =========================
+   RESPONSIVE TABLET
+   ========================= */
+
+@media (max-width: 900px) {
+
+    .header {
+        padding: 17px 5%;
+    }
+
+
+    .container {
+        width: 90%;
+
+        padding-top: 40px;
+    }
+
+
+    .session-content {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+    }
+
+
+    .qr-placeholder {
+        min-height: 330px;
+    }
+
+
+    .hero h2 {
+        letter-spacing: -1.5px;
+    }
+
+}
+
+
+/* =========================
+   RESPONSIVE MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .header {
+        padding: 15px 5%;
+    }
+
+
+    .brand-logo {
+        width: 42px;
+        height: 42px;
+
+        border-radius: 10px;
+    }
+
+
+    .brand h1 {
+        font-size: 16px;
+    }
+
+
+    .brand p {
+        font-size: 11px;
+    }
+
+
+    .connection {
+        font-size: 11px;
+    }
+
+
+    .container {
+        width: 92%;
+
+        padding: 32px 0 55px;
+    }
+
+
+    .hero h2 {
+        font-size: 34px;
+
+        line-height: 1.08;
+
+        letter-spacing: -1.2px;
+    }
+
+
+    .hero p {
+        font-size: 14px;
+    }
+
+
+    .card {
+        padding: 20px;
+
+        border-radius: 16px;
+    }
+
+
+    .card-header h3 {
+        font-size: 17px;
+    }
+
+
+    .card-header p {
+        font-size: 12px;
+    }
+
+
+    .header-icon {
+        width: 40px;
+        height: 40px;
+
+        border-radius: 10px;
+    }
+
+
+    .qr-placeholder {
+        min-height: 280px;
+    }
+
+
+    .qr-box {
+        width: 210px;
+        height: 210px;
+
+        background-size: 28px 28px;
+
+        border-width: 9px;
+    }
+
+
+    .session-info h4 {
+        font-size: 22px;
+    }
+
+
+    .session-details {
+        grid-template-columns: 1fr;
+    }
+
+
+    .button-group {
+        flex-direction: column;
+    }
+
+
+    .button-group .btn {
+        width: 100%;
+    }
+
+
+    .camera-placeholder {
+        min-height: 300px;
+    }
+
+
+    .input-row {
+        flex-direction: column;
+    }
+
+
+    .input-row .btn {
+        width: 100%;
+    }
+
+
+    .input-row input {
+        width: 100%;
+    }
+
+
+    footer {
+        padding: 20px;
+    }
+
+}
+
+/* =========================
+   STUDENT QR RESULT
+   ========================= */
+
+.student-qr-result {
+    display: none;
+
+    margin-top: 25px;
+
+    padding: 25px;
+
+    background: #f7f8fa;
+
+    border: 1px solid #e4e8ec;
+
+    border-radius: 16px;
+
+    align-items: center;
+
+    gap: 25px;
+}
+
+
+.student-qr-result.show {
+    display: flex;
+}
+
+
+#studentQRCode {
+    width: 280px;
+    height: 280px;
+
+    padding: 20px;
+
+    background: #ffffff;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+
+#studentQRCode img,
+#studentQRCode canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+
+#studentInfo h4 {
+    font-size: 20px;
+
+    margin-bottom: 10px;
+
+    color: #111827;
+}
+
+
+#studentInfo p {
+    margin-top: 6px;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   MOBILE QR
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .student-qr-result {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+}
+
+/* =========================
+   QR SCANNER
+   ========================= */
+
+#reader {
+    width: 100%;
+    max-width: 520px;
+    min-height: 320px;
+
+    margin: 0 auto;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    background: #10151a;
+
+    border: 1px solid #252d35;
+}
+
+
+#reader video {
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 16px;
+}
+
+
+.scanner-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+
+#scanResult {
+    margin-top: 20px;
+}
+
+
+.scan-success {
+    padding: 20px;
+
+    background: #eaf8ef;
+
+    border: 1px solid #bce8ca;
+
+    border-radius: 14px;
+
+    text-align: center;
+}
+
+
+.scan-success h4 {
+    color: #16803c;
+
+    font-size: 20px;
+
+    margin-bottom: 8px;
+}
+
+
+.scan-success p {
+    color: #45604d;
+
+    font-size: 13px;
+
+    margin-top: 5px;
+}
+
+
+.scan-error {
+    padding: 16px;
+
+    background: #fff1f1;
+
+    border: 1px solid #f2c4c4;
+
+    border-radius: 14px;
+
+    color: #b42318;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+@media (max-width: 600px) {
+
+    #reader {
+        min-height: 280px;
+    }
+
+
+    .scanner-controls {
+        flex-direction: column;
+    }
+
+
+    .scanner-controls .btn {
+        width: 100%;
+    }
+
+}
+
+/* =========================
+   QR SESI KELAS
+   ========================= */
+
+.class-qr {
+    width: 300px;
+    min-height: 300px;
+
+    background: #ffffff;
+
+    padding: 10px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.08);
+}
+
+
+.class-qr img,
+.class-qr canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+
+@media (max-width: 600px) {
+
+    .class-qr {
+        width: 250px;
+        min-height: 250px;
+    }
+
+}
+
+/* ===============================
+   FORM BUAT PRESENSI
+================================ */
+
+.session-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: #111827;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    border-color: #111827;
+
+    box-shadow:
+        0 0 0 3px rgba(17, 24, 39, 0.08);
+}
+
+.form-group input[readonly] {
+    background: #f3f4f6;
+    color: #4b5563;
+    cursor: not-allowed;
+}
+
+
+/* ===============================
+   RESPONSIVE FORM
+================================ */
+
+@media (max-width: 768px) {
+
+    .session-form {
+        grid-template-columns: 1fr;
+    }
+
+}
