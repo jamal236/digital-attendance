@@ -953,7 +953,6 @@ window.sesiAktif = null;
 // ===============================
 // BUAT SESI
 // ===============================
-
 function buatSesi() {
 
     const mataKuliah =
@@ -974,8 +973,6 @@ function buatSesi() {
     const materi =
         document.getElementById("materiInput").value.trim();
 
-
-    // Validasi
     if (
         !mataKuliah ||
         !dosen ||
@@ -984,47 +981,132 @@ function buatSesi() {
         !jam ||
         !materi
     ) {
-
         alert("Lengkapi semua data presensi terlebih dahulu!");
-
         return;
     }
 
-
-    // Buat ID sesi unik
     const sessionId =
         "SESI-" + Date.now();
 
-
-    // Data sesi presensi
     window.sesiAktif = {
         type: "SESSION",
-
         session_id: sessionId,
-
         mata_kuliah: mataKuliah,
-
         dosen: dosen,
-
         kelas: kelas,
-
         pertemuan: pertemuan,
-
         jam: jam,
-
         materi: materi,
-
-        timestamp:
-            new Date().toISOString()
+        timestamp: new Date().toISOString()
     };
 
-} 
+    // ===============================
+    // SIMPAN DATA KE SHEET PERTEMUAN
+    // ===============================
+
+    const API_URL =
+        "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
+
+    fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+            action: "pertemuan",
+            mata_kuliah: mataKuliah,
+            dosen: dosen,
+            kelas: kelas,
+            pertemuan: pertemuan,
+            materi: materi,
+            tanggal:
+                new Date().toLocaleDateString("id-ID"),
+            jam: jam,
+            sesi: jam,
+            status: "Aktif"
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        console.log("Data Pertemuan:", data);
+    })
+    .catch(function(error) {
+        console.error(
+            "Gagal menyimpan Pertemuan:",
+            error
+        );
+    });
 
     // ===============================
-// DOWNLOAD QR SESI
-// ===============================
+    // TAMPILKAN INFORMASI SESI
+    // ===============================
 
-window.downloadQR = function() {
+    document.getElementById("sessionMataKuliah")
+        .textContent = mataKuliah;
+
+    document.getElementById("sessionDosen")
+        .textContent = dosen;
+
+    document.getElementById("sessionKelas")
+        .textContent = kelas;
+
+    document.getElementById("sessionPertemuan")
+        .textContent = "Pertemuan " + pertemuan;
+
+    document.getElementById("sessionJam")
+        .textContent = jam;
+
+    document.getElementById("sessionMateri")
+        .textContent = materi;
+
+    // ===============================
+    // BUAT QR SESI
+    // ===============================
+
+    const qrContainer =
+        document.getElementById("classQRCode");
+
+    qrContainer.innerHTML = "";
+
+    const sessionUrl =
+        `${window.location.origin}${window.location.pathname
+            .replace("index.html", "")
+            .replace(/\/$/, "")}/student.html?session=${encodeURIComponent(
+                JSON.stringify(window.sesiAktif)
+            )}`;
+
+    new QRCode(qrContainer, {
+        text: sessionUrl,
+        width: 280,
+        height: 280,
+        colorDark: "#111827",
+        colorLight: "#ffffff",
+        correctLevel:
+            QRCode.CorrectLevel.H
+    });
+
+    console.log(
+        "Sesi aktif:",
+        window.sesiAktif
+    );
+
+    console.log(
+        "URL sesi:",
+        sessionUrl
+    );
+
+    alert(
+        "Sesi presensi berhasil dibuat!"
+    );
+}
+
+// ===============================
+// DOWNLOAD QR
+// ===============================
+function downloadQR() {
 
     const qrContainer =
         document.getElementById("classQRCode");
@@ -1066,18 +1148,16 @@ window.downloadQR = function() {
     link.click();
 
     document.body.removeChild(link);
-};
+}
 
-    // ===============================
+
+// ===============================
 // TUTUP SESI
 // ===============================
-
 function tutupSesi() {
 
     if (!window.sesiAktif) {
-
         alert("Belum ada sesi yang aktif!");
-
         return;
     }
 
@@ -1093,139 +1173,9 @@ function tutupSesi() {
     alert(
         "Fungsi Tutup Sesi sedang diproses."
     );
-
 }
-    // ===============================
-// SIMPAN DATA KE SHEET PERTEMUAN
-// ===============================
-
-const API_URL =
-    "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
-
-fetch(API_URL, {
-    method: "POST",
-    headers: {
-        "Content-Type":
-            "application/x-www-form-urlencoded"
-    },
-    body: new URLSearchParams({
-
-        action: "pertemuan",
-
-        mata_kuliah: mataKuliah,
-
-        dosen: dosen,
-
-        kelas: kelas,
-
-        pertemuan: pertemuan,
-
-        materi: materi,
-
-        tanggal:
-            new Date().toLocaleDateString("id-ID"),
-
-        jam: jam,
-
-        sesi: jam,
-
-        status: "Aktif"
-
-    })
-})
-.then(function(response) {
-    return response.json();
-})
-.then(function(data) {
-
-    console.log(
-        "Data Pertemuan:",
-        data
-    );
-
-})
-.catch(function(error) {
-
-    console.error(
-        "Gagal menyimpan Pertemuan:",
-        error
-    );
-
-});
 
 
-    // Tampilkan informasi sesi
-    document.getElementById("sessionMataKuliah")
-        .textContent = mataKuliah;
-
-    document.getElementById("sessionDosen")
-        .textContent = dosen;
-
-    document.getElementById("sessionKelas")
-        .textContent = kelas;
-
-    document.getElementById("sessionPertemuan")
-        .textContent =
-        "Pertemuan " + pertemuan;
-
-    document.getElementById("sessionJam")
-        .textContent = jam;
-
-    document.getElementById("sessionMateri")
-        .textContent = materi;
-
-
-    // Ambil tempat QR
-    const qrContainer =
-        document.getElementById("classQRCode");
-
-
-    // Bersihkan QR sebelumnya
-    qrContainer.innerHTML = "";
-
-
-    // Alamat halaman mahasiswa
-const sessionUrl =
-    `${window.location.origin}${window.location.pathname
-        .replace("index.html", "")
-        .replace(/\/$/, "")}/student.html?session=${encodeURIComponent(
-            JSON.stringify(window.sesiAktif)
-        )}`;
-
-
-    // Buat QR sesi
-    new QRCode(qrContainer, {
-
-        text: sessionUrl,
-
-        width: 280,
-
-        height: 280,
-
-        colorDark: "#111827",
-
-        colorLight: "#ffffff",
-
-        correctLevel:
-            QRCode.CorrectLevel.H
-    });
-
-
-    console.log(
-        "Sesi aktif:",
-        window.sesiAktif
-    );
-
-    console.log(
-        "URL sesi:",
-        sessionUrl
-    );
-
-
-    alert(
-        "Sesi presensi berhasil dibuat!"
-    );
-}
 
 // ===============================
 // OTOMATIS SESUAI JADWAL
