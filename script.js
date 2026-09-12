@@ -1018,6 +1018,64 @@ function buatSesi() {
             new Date().toISOString()
     };
 
+    // ===============================
+// SIMPAN DATA KE SHEET PERTEMUAN
+// ===============================
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
+
+fetch(API_URL, {
+    method: "POST",
+    headers: {
+        "Content-Type":
+            "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+
+        action: "pertemuan",
+
+        mata_kuliah: mataKuliah,
+
+        dosen: dosen,
+
+        kelas: kelas,
+
+        pertemuan: pertemuan,
+
+        materi: materi,
+
+        tanggal:
+            new Date().toLocaleDateString("id-ID"),
+
+        jam: jam,
+
+        sesi: jam,
+
+        status: "Aktif"
+
+    })
+})
+.then(function(response) {
+    return response.json();
+})
+.then(function(data) {
+
+    console.log(
+        "Data Pertemuan:",
+        data
+    );
+
+})
+.catch(function(error) {
+
+    console.error(
+        "Gagal menyimpan Pertemuan:",
+        error
+    );
+
+});
+
 
     // Tampilkan informasi sesi
     document.getElementById("sessionMataKuliah")
