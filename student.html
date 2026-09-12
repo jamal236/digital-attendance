@@ -909,41 +909,66 @@ function konfirmasiHadir() {
         // CEK NIM MANUAL
         // ==========================================
 
-        function cekNIM() {
+function cekNIM() {
 
-            const nim =
-                document
-                    .getElementById(
-                        "manualNim"
-                    )
-                    .value
-                    .trim();
+    const input =
+        document.getElementById("studentNim");
 
+    if (!input) {
+        console.error("Input NIM tidak ditemukan.");
+        return;
+    }
 
-            const data =
-                mahasiswa.find(
-                    student =>
-                        student.nim === nim
-                );
+    const nim =
+        input.value.trim();
 
+    if (nim === "") {
 
-            if (!data) {
+        tampilkanHasil(
+            "error",
+            "Silakan masukkan NIM mahasiswa."
+        );
 
-                tampilkanHasil(
-                    "error",
-                    "NIM tidak terdaftar."
-                );
+        return;
+    }
 
-                return;
+    console.log("NIM yang dicek:", nim);
+    console.log("Jumlah mahasiswa:", mahasiswa.length);
 
-            }
+    const data =
+        mahasiswa.find(function(student) {
 
+            return String(student.nim).trim() === nim;
 
-            prosesQRMahasiswa(
-                JSON.stringify(data)
-            );
+        });
 
-        }
+    if (!data) {
+
+        console.log(
+            "NIM tidak ditemukan:",
+            nim
+        );
+
+        tampilkanHasil(
+            "error",
+            "NIM tidak terdaftar."
+        );
+
+        return;
+    }
+
+    console.log(
+        "Mahasiswa ditemukan:",
+        data
+    );
+
+    window.mahasiswaTerpilih = data;
+
+    tampilkanHasil(
+        "success",
+        data
+    );
+}
 
     </script>
 
