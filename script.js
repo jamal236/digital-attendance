@@ -391,6 +391,7 @@ async function berhasilScan(decodedText) {
 
 // ===============================
 // CEK KEHADIRAN MAHASISWA
+// SESUAI SESI AKTIF
 // ===============================
 
 async function cekKehadiranMahasiswa(data) {
@@ -422,18 +423,62 @@ async function cekKehadiranMahasiswa(data) {
     `;
 
 
+    // ===============================
+    // SESI AKTIF
+    // ===============================
+
+    const sesi =
+        window.sesiAktif;
+
+    if (!sesi) {
+
+        tampilkanError(
+            "Belum ada sesi presensi yang aktif."
+        );
+
+        return;
+    }
+
+
+    console.log(
+        "SESI AKTIF:",
+        sesi
+    );
+
+
+    const mataKuliahSesi =
+        String(
+            sesi.mata_kuliah || ""
+        ).trim();
+
+    const pertemuanSesi =
+        String(
+            sesi.pertemuan || ""
+        ).trim();
+
+
+    console.log(
+        "Mata Kuliah Sesi:",
+        mataKuliahSesi
+    );
+
+    console.log(
+        "Pertemuan Sesi:",
+        pertemuanSesi
+    );
+
+
+    // ===============================
+    // URL APPS SCRIPT
+    // ===============================
+
     const API_URL =
         "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
 
 
     const callbackName =
-        "cekPresensiCallback_" + Date.now();
-
-
-    console.log(
-        "Callback:",
-        callbackName
-    );
+        "cekPresensiCallback_" +
+        Date.now();
 
 
     const script =
@@ -448,17 +493,52 @@ async function cekKehadiranMahasiswa(data) {
         function(presensi) {
 
             console.log(
-                "DATA PRESENSI BERHASIL DITERIMA:",
+                "DATA PRESENSI:",
                 presensi
             );
 
 
+            // ===============================
+            // CARI PRESENSI SESUAI SESI
+            // ===============================
+
             const sudahHadir =
                 presensi.find(function(item) {
 
-                    return (
+                    const nimSama =
                         String(item.nim).trim() ===
-                        String(data.nim).trim()
+                        String(data.nim).trim();
+
+
+                    const mataKuliahSama =
+                        String(
+                            item.mata_kuliah || ""
+                        ).trim() ===
+                        mataKuliahSesi;
+
+
+                    const pertemuanSama =
+                        String(
+                            item.pertemuan || ""
+                        ).trim() ===
+                        pertemuanSesi;
+
+
+                    console.log(
+                        "CEK DATA:",
+                        {
+                            nimSama,
+                            mataKuliahSama,
+                            pertemuanSama,
+                            item
+                        }
+                    );
+
+
+                    return (
+                        nimSama &&
+                        mataKuliahSama &&
+                        pertemuanSama
                     );
 
                 });
@@ -471,9 +551,10 @@ async function cekKehadiranMahasiswa(data) {
             if (sudahHadir) {
 
                 console.log(
-                    "MAHASISWA SUDAH HADIR:",
+                    "MAHASISWA SUDAH HADIR DI SESI INI:",
                     sudahHadir
                 );
+
 
                 result.innerHTML = `
 
@@ -495,12 +576,12 @@ async function cekKehadiranMahasiswa(data) {
 
                         <p>
                             Mata Kuliah:
-                            ${sudahHadir.mata_kuliah || "-"}
+                            ${sudahHadir.mata_kuliah}
                         </p>
 
                         <p>
                             Pertemuan:
-                            ${sudahHadir.pertemuan || "-"}
+                            ${sudahHadir.pertemuan}
                         </p>
 
                         <p>
@@ -512,12 +593,20 @@ async function cekKehadiranMahasiswa(data) {
 
                 `;
 
-            } else {
+            }
+
+
+            // ===============================
+            // BELUM HADIR
+            // ===============================
+
+            else {
 
                 console.log(
-                    "MAHASISWA BELUM HADIR:",
+                    "MAHASISWA BELUM HADIR DI SESI INI:",
                     data.nim
                 );
+
 
                 result.innerHTML = `
 
@@ -535,6 +624,16 @@ async function cekKehadiranMahasiswa(data) {
 
                         <p>
                             NIM: ${data.nim}
+                        </p>
+
+                        <p>
+                            Mata Kuliah:
+                            ${mataKuliahSesi}
+                        </p>
+
+                        <p>
+                            Pertemuan:
+                            ${pertemuanSesi}
                         </p>
 
                     </div>
@@ -555,7 +654,7 @@ async function cekKehadiranMahasiswa(data) {
 
 
     // ===============================
-    // JIKA GAGAL
+    // ERROR
     // ===============================
 
     script.onerror =
@@ -566,6 +665,7 @@ async function cekKehadiranMahasiswa(data) {
                 error
             );
 
+
             result.innerHTML = `
 
                 <div class="scan-error">
@@ -575,6 +675,7 @@ async function cekKehadiranMahasiswa(data) {
                 </div>
 
             `;
+
 
             delete window[callbackName];
 
@@ -618,6 +719,7 @@ async function cekKehadiranMahasiswa(data) {
                 "TIMEOUT: Apps Script tidak memberikan callback."
             );
 
+
             result.innerHTML = `
 
                 <div class="scan-error">
@@ -628,6 +730,7 @@ async function cekKehadiranMahasiswa(data) {
                 </div>
 
             `;
+
 
             delete window[callbackName];
 
