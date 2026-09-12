@@ -16,10 +16,10 @@ let mahasiswa = [];
 // ===============================
 
 const LINK_SHEET =
-    https://docs.google.com/spreadsheets/d/11tIbv7YAJeg41v9dxwNY2izZPNG3JtA7TrM9QTG4i6Y/edit
+    "https://docs.google.com/spreadsheets/d/11tIbv7YAJeg41v9dxwNY2izZPNG3JtA7TrM9QTG4i6Y/edit";
 
 const API_URL =
-    "https://script.google.com/macros/s/AKfycbyUT42QkL-FU_sJn_TdDMQyBL9ZBZiygSPE_DFwLpKVRQ2xuFtYZfqtWQcO4eIvmQRhfg/exec";
+    "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
 
     // ===============================
 // AMBIL DATA MAHASISWA DARI SHEET
