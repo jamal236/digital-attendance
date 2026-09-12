@@ -404,7 +404,6 @@ async function cekKehadiranMahasiswa(data) {
         document.getElementById("scanResult");
 
     result.innerHTML = `
-
         <div class="scan-success">
 
             <h4>
@@ -420,49 +419,226 @@ async function cekKehadiranMahasiswa(data) {
             </p>
 
         </div>
-
     `;
 
-}
 
-async function simpanPresensi(data) {
+    const API_URL =
+        "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
 
-    const presensi = {
-        nim: data.nim,
-        mata_kuliah: data.mata_kuliah || "Pemrograman Web",
-        status: "HADIR"
-    };
 
-    try {
+    const callbackName =
+        "cekPresensiCallback_" + Date.now();
 
-        await fetch(
-            "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec",
-            {
-                method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body:
-                    "nim=" + encodeURIComponent(presensi.nim) +
-                    "&mata_kuliah=" + encodeURIComponent(presensi.mata_kuliah) +
-                    "&status=" + encodeURIComponent(presensi.status)
+
+    console.log(
+        "Callback:",
+        callbackName
+    );
+
+
+    const script =
+        document.createElement("script");
+
+
+    // ===============================
+    // CALLBACK
+    // ===============================
+
+    window[callbackName] =
+        function(presensi) {
+
+            console.log(
+                "DATA PRESENSI BERHASIL DITERIMA:",
+                presensi
+            );
+
+
+            const sudahHadir =
+                presensi.find(function(item) {
+
+                    return (
+                        String(item.nim).trim() ===
+                        String(data.nim).trim()
+                    );
+
+                });
+
+
+            // ===============================
+            // SUDAH HADIR
+            // ===============================
+
+            if (sudahHadir) {
+
+                console.log(
+                    "MAHASISWA SUDAH HADIR:",
+                    sudahHadir
+                );
+
+                result.innerHTML = `
+
+                    <div class="scan-success">
+
+                        <h4>
+                            ✓ MAHASISWA SUDAH HADIR
+                        </h4>
+
+                        <p>
+                            <strong>
+                                ${data.nama}
+                            </strong>
+                        </p>
+
+                        <p>
+                            NIM: ${data.nim}
+                        </p>
+
+                        <p>
+                            Mata Kuliah:
+                            ${sudahHadir.mata_kuliah || "-"}
+                        </p>
+
+                        <p>
+                            Pertemuan:
+                            ${sudahHadir.pertemuan || "-"}
+                        </p>
+
+                        <p>
+                            Status:
+                            ${sudahHadir.status || "HADIR"}
+                        </p>
+
+                    </div>
+
+                `;
+
+            } else {
+
+                console.log(
+                    "MAHASISWA BELUM HADIR:",
+                    data.nim
+                );
+
+                result.innerHTML = `
+
+                    <div class="scan-error">
+
+                        <h4>
+                            ✕ MAHASISWA BELUM HADIR
+                        </h4>
+
+                        <p>
+                            <strong>
+                                ${data.nama}
+                            </strong>
+                        </p>
+
+                        <p>
+                            NIM: ${data.nim}
+                        </p>
+
+                    </div>
+
+                `;
+
             }
-        );
 
-        console.log(
-            "Presensi berhasil dikirim:",
-            presensi
-        );
 
-    } catch (error) {
+            // Bersihkan callback
+            delete window[callbackName];
 
-        console.error(
-            "Gagal menyimpan presensi:",
-            error
-        );
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
 
-    }
+        };
+
+
+    // ===============================
+    // JIKA GAGAL
+    // ===============================
+
+    script.onerror =
+        function(error) {
+
+            console.error(
+                "GAGAL MEMUAT DATA PRESENSI:",
+                error
+            );
+
+            result.innerHTML = `
+
+                <div class="scan-error">
+
+                    ❌ Gagal mengambil data presensi.
+
+                </div>
+
+            `;
+
+            delete window[callbackName];
+
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
+
+        };
+
+
+    // ===============================
+    // PANGGIL APPS SCRIPT
+    // ===============================
+
+    const url =
+        API_URL +
+        "?action=presensi&callback=" +
+        encodeURIComponent(callbackName);
+
+
+    console.log(
+        "URL CEK PRESENSI:",
+        url
+    );
+
+
+    script.src = url;
+
+    document.body.appendChild(script);
+
+
+    // ===============================
+    // TIMEOUT
+    // ===============================
+
+    setTimeout(function() {
+
+        if (window[callbackName]) {
+
+            console.error(
+                "TIMEOUT: Apps Script tidak memberikan callback."
+            );
+
+            result.innerHTML = `
+
+                <div class="scan-error">
+
+                    ❌ Waktu pengecekan habis.
+                    Silakan coba scan lagi.
+
+                </div>
+
+            `;
+
+            delete window[callbackName];
+
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
+
+        }
+
+    }, 10000);
+
 }
 
 // ===============================
