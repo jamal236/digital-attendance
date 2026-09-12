@@ -892,4 +892,43 @@ function updateJadwal() {
 
 }
 
+// ===============================
+// TAMPILKAN DAFTAR MAHASISWA
+// ===============================
+
+function tampilkanDaftarMahasiswa() {
+
+    const tbody =
+        document.getElementById("mahasiswaTableBody");
+
+    if (!tbody) {
+        console.error(
+            "Tabel mahasiswa tidak ditemukan."
+        );
+        return;
+    }
+
+    tbody.innerHTML = "";
+
+    mahasiswa.forEach(function(student) {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${student.nim}</td>
+            <td>${student.nama}</td>
+            <td>${student.kelas}</td>
+            <td>${student.jurusan}</td>
+            <td>
+                <span class="status hadir">
+                    ${student.status || "Aktif"}
+                </span>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
 loadMahasiswa();
