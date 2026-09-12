@@ -440,10 +440,10 @@ async function cekKehadiranMahasiswa(data) {
     }
 
 
-    console.log(
-        "SESI AKTIF:",
-        sesi
-    );
+console.log(
+    "Sesi aktif:",
+    window.sesiAktif
+);
 
 
     const mataKuliahSesi =
@@ -947,7 +947,7 @@ async function scanDariGambar(event) {
 // QR BESAR / SESI KELAS
 // =====================================================
 
-let sesiAktif = null;
+window.sesiAktif = null;
 
 
 // ===============================
@@ -997,7 +997,7 @@ function buatSesi() {
 
 
     // Data sesi presensi
-    sesiAktif = {
+    window.sesiAktif = {
         type: "SESSION",
 
         session_id: sessionId,
@@ -1054,7 +1054,7 @@ const sessionUrl =
     `${window.location.origin}${window.location.pathname
         .replace("index.html", "")
         .replace(/\/$/, "")}/student.html?session=${encodeURIComponent(
-            JSON.stringify(sesiAktif)
+            JSON.stringify(window.sesiAktif)
         )}`;
 
 
@@ -1078,7 +1078,7 @@ const sessionUrl =
 
     console.log(
         "Sesi aktif:",
-        sesiAktif
+        window.sesiAktif
     );
 
     console.log(
