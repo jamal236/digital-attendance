@@ -1019,6 +1019,81 @@ function buatSesi() {
     };
 
     // ===============================
+// DOWNLOAD QR SESI
+// ===============================
+
+function downloadQR() {
+
+    const qrContainer =
+        document.getElementById("classQRCode");
+
+    if (!qrContainer) {
+        alert("QR Code tidak ditemukan.");
+        return;
+    }
+
+    const canvas =
+        qrContainer.querySelector("canvas");
+
+    const img =
+        qrContainer.querySelector("img");
+
+    let dataURL = null;
+
+    if (canvas) {
+        dataURL = canvas.toDataURL("image/png");
+    } else if (img) {
+        dataURL = img.src;
+    }
+
+    if (!dataURL) {
+        alert("Buat sesi terlebih dahulu.");
+        return;
+    }
+
+    const link =
+        document.createElement("a");
+
+    link.href = dataURL;
+
+    link.download =
+        "QR-Sesi-Presensi.png";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+}
+
+    // ===============================
+// TUTUP SESI
+// ===============================
+
+function tutupSesi() {
+
+    if (!window.sesiAktif) {
+
+        alert("Belum ada sesi yang aktif!");
+
+        return;
+    }
+
+    const konfirmasi =
+        confirm(
+            "Apakah Anda yakin ingin menutup sesi presensi ini?"
+        );
+
+    if (!konfirmasi) {
+        return;
+    }
+
+    alert(
+        "Fungsi Tutup Sesi sedang diproses."
+    );
+
+}
+    // ===============================
 // SIMPAN DATA KE SHEET PERTEMUAN
 // ===============================
 
