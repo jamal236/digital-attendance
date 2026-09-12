@@ -180,7 +180,7 @@ function tampilkanQR(data) {
 
 new QRCode(qrContainer, {
 
-    text: JSON.stringify(data),
+    text: String(data.nim),
 
     width: 240,
 

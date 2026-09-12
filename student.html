@@ -556,89 +556,83 @@ if (window.sesiAktif) {
 
 
 
-        // ==========================================
-        // PROSES QR MAHASISWA
-        // ==========================================
+       // ==========================================
+// PROSES QR MAHASISWA
+// ==========================================
 
-        function prosesQRMahasiswa(
-            decodedText
-        ) {
+function prosesQRMahasiswa(decodedText) {
 
-            let data;
+    console.log("QR TERBACA:", decodedText);
 
+    // QR sekarang langsung berisi NIM
+    const nimQR =
+        String(decodedText).trim();
 
-            try {
+    console.log("NIM DARI QR:", nimQR);
+    console.log(
+        "JUMLAH DATA MAHASISWA:",
+        mahasiswa.length
+    );
 
-                data =
-                    JSON.parse(
-                        decodedText
-                    );
+    // Cari mahasiswa berdasarkan NIM
+    const mahasiswaDitemukan =
+        mahasiswa.find(function(student) {
 
-            } catch (error) {
+            return String(student.nim).trim() === nimQR;
 
-                tampilkanHasil(
-                    "error",
-                    "QR mahasiswa tidak valid."
-                );
+        });
 
-                return;
+    // Tidak ditemukan
+    if (!mahasiswaDitemukan) {
 
-            }
+        console.log(
+            "MAHASISWA TIDAK DITEMUKAN:",
+            nimQR
+        );
 
+        tampilkanHasil(
+            "error",
+            "Mahasiswa tidak terdaftar."
+        );
 
-            // Cari mahasiswa
+        return;
+    }
 
-const mahasiswaDitemukan =
-    mahasiswa.find(function(student) {
+    // Mahasiswa ditemukan
+    console.log(
+        "MAHASISWA DITEMUKAN:",
+        mahasiswaDitemukan
+    );
 
-        return String(student.nim).trim() ===
-               String(data.nim).trim();
+    // Cek kelas
+    if (
+        window.sesiAktif &&
+        window.sesiAktif.kelas !== "Semua" &&
+        String(mahasiswaDitemukan.kelas).trim() !==
+        String(window.sesiAktif.kelas).trim()
+    ) {
 
-    });
+        tampilkanHasil(
+            "error",
+            "Mahasiswa bukan dari kelas ini."
+        );
 
-            if (!mahasiswaDitemukan) {
+        return;
+    }
 
-                tampilkanHasil(
-                    "error",
-                    "Mahasiswa tidak terdaftar."
-                );
+    // Simpan mahasiswa yang ditemukan
+    window.mahasiswaTerpilih =
+        mahasiswaDitemukan;
 
-                return;
+    // Tampilkan hasil
+    tampilkanHasil(
+        "success",
+        mahasiswaDitemukan
+    );
 
-            }
-
-
-            // Pastikan kelas sesuai
-
-            if (
-                sesi &&
-                sesi.kelas !== "Semua" &&
-                mahasiswaDitemukan.kelas !==
-                    sesi.kelas
-            ) {
-
-                tampilkanHasil(
-                    "error",
-                    "Mahasiswa bukan dari kelas ini."
-                );
-
-                return;
-
-            }
-
-
-            // Berhasil
-
-            tampilkanHasil(
-                "success",
-                mahasiswaDitemukan
-            );
-
-
-            stopScanMahasiswa();
-
-        }
-
+    // Hentikan kamera
+    stopScanMahasiswa();
+}
 
 
         // ==========================================
