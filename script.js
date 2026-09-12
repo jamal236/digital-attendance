@@ -503,45 +503,51 @@ async function cekKehadiranMahasiswa(data) {
             // ===============================
 
             const sudahHadir =
-                presensi.find(function(item) {
+    presensi.find(function(item) {
 
-                    const nimSama =
-                        String(item.nim).trim() ===
-                        String(data.nim).trim();
-
-
-                    const mataKuliahSama =
-                        String(
-                            item.mata_kuliah || ""
-                        ).trim() ===
-                        mataKuliahSesi;
+        const nimSama =
+            String(item.nim).trim() ===
+            String(data.nim).trim();
 
 
-                    const pertemuanSama =
-                        String(
-                            item.pertemuan || ""
-                        ).trim() ===
-                        pertemuanSesi;
+        const mataKuliahSama =
+            String(item.mata_kuliah || "").trim() ===
+            String(sesi.mata_kuliah || "").trim();
 
 
-                    console.log(
-                        "CEK DATA:",
-                        {
-                            nimSama,
-                            mataKuliahSama,
-                            pertemuanSama,
-                            item
-                        }
-                    );
+        // Normalisasi pertemuan
+        const pertemuanData =
+            String(item.pertemuan || "")
+                .replace(/[^0-9]/g, "");
+
+        const pertemuanSesi =
+            String(sesi.pertemuan || "")
+                .replace(/[^0-9]/g, "");
 
 
-                    return (
-                        nimSama &&
-                        mataKuliahSama &&
-                        pertemuanSama
-                    );
+        const pertemuanSama =
+            pertemuanData === pertemuanSesi;
 
-                });
+
+        console.log("CEK PRESENSI:", {
+            nim: item.nim,
+            mataKuliah: item.mata_kuliah,
+            pertemuan: item.pertemuan,
+            nimSama: nimSama,
+            mataKuliahSama: mataKuliahSama,
+            pertemuanData: pertemuanData,
+            pertemuanSesi: pertemuanSesi,
+            pertemuanSama: pertemuanSama
+        });
+
+
+        return (
+            nimSama &&
+            mataKuliahSama &&
+            pertemuanSama
+        );
+
+    });
 
 
             // ===============================
