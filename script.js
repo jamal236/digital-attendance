@@ -25,30 +25,53 @@ const API_URL =
 // AMBIL DATA MAHASISWA DARI SHEET
 // ===============================
 
-async function loadMahasiswa() {
-    try {
-        const response = await fetch(
-            "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec?action=mahasiswa"
-        );
+function loadMahasiswa() {
 
-        if (!response.ok) {
-            throw new Error("API tidak merespons dengan benar");
-        }
+    const callbackName =
+        "mahasiswaCallback_" + Date.now();
 
-        const data = await response.json();
+    window[callbackName] = function(data) {
 
-        mahasiswa = data.map(item => ({
-            ...item,
-            nim: String(item.nim),
-            kelas: String(item.kelas)
+        mahasiswa = data.map(m => ({
+            ...m,
+            nim: String(m.nim),
+            kelas: String(m.kelas)
         }));
 
-        console.log("Data mahasiswa berhasil diambil:", mahasiswa);
+        console.log(
+            "Data mahasiswa berhasil diambil:",
+            mahasiswa
+        );
+
         tampilkanDaftarMahasiswa();
 
-    } catch (error) {
-        console.error("Gagal mengambil data mahasiswa:", error);
-    }
+        delete window[callbackName];
+        script.remove();
+    };
+
+    const script =
+        document.createElement("script");
+
+    script.src =
+        API_URL +
+        "?action=mahasiswa&callback=" +
+        callbackName;
+
+    script.onerror = function() {
+
+        console.error(
+            "Gagal mengambil data mahasiswa."
+        );
+
+        alert(
+            "Gagal mengambil data mahasiswa dari Google Sheet."
+        );
+
+        delete window[callbackName];
+        script.remove();
+    };
+
+    document.body.appendChild(script);
 }
 
 // ===============================
