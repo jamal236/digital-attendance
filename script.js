@@ -997,8 +997,7 @@ function buatSesi() {
 
 
     // Data sesi presensi
-    window.sesiAktif = {
-
+    sesiAktif = {
         type: "SESSION",
 
         session_id: sessionId,
@@ -1055,7 +1054,7 @@ const sessionUrl =
     `${window.location.origin}${window.location.pathname
         .replace("index.html", "")
         .replace(/\/$/, "")}/student.html?session=${encodeURIComponent(
-            JSON.stringify(window.sesiAktif)
+            JSON.stringify(sesiAktif)
         )}`;
 
 
