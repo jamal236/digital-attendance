@@ -339,74 +339,91 @@ async function stopScanner() {
 }
 
 
+
 // ===============================
-// HASIL SCAN
+// HASIL SCAN DOSEN
 // ===============================
 
-function berhasilScan(decodedText) {
+async function berhasilScan(decodedText) {
 
-    console.log(
-        "QR terbaca:",
-        decodedText
-    );
+    console.log("QR DOSEN TERBACA:", decodedText);
 
+    const nimQR =
+        String(decodedText).trim();
 
-    let data;
-
-
-    // Coba membaca JSON
-
-    try {
-
-        data = JSON.parse(decodedText);
-
-    } catch (error) {
+    if (!nimQR) {
 
         tampilkanError(
-            "QR Code tidak memiliki format yang valid."
+            "QR mahasiswa tidak valid."
         );
 
         return;
-
     }
 
-
-    // Cari mahasiswa berdasarkan NIM
+    console.log("NIM DARI QR:", nimQR);
 
     const mahasiswaDitemukan =
-        mahasiswa.find(
-            student =>
-                student.nim === data.nim
-        );
+        mahasiswa.find(function(student) {
 
+            return String(student.nim).trim() === nimQR;
 
-    // NIM tidak ditemukan
+        });
 
     if (!mahasiswaDitemukan) {
 
         tampilkanError(
-            `NIM ${data.nim} tidak terdaftar!`
+            "NIM " + nimQR + " tidak terdaftar!"
         );
 
         return;
-
     }
 
-
-    // Mahasiswa ditemukan
-
-    tampilkanBerhasil(
+    console.log(
+        "MAHASISWA DITEMUKAN:",
         mahasiswaDitemukan
     );
 
-    simpanPresensi(mahasiswaDitemukan);
-
-    // Stop kamera setelah berhasil
-
-    stopScanner();
+    await cekKehadiranMahasiswa(
+        mahasiswaDitemukan
+    );
 
 }
 
+// ===============================
+// CEK KEHADIRAN MAHASISWA
+// ===============================
+
+async function cekKehadiranMahasiswa(data) {
+
+    console.log(
+        "Mengecek kehadiran:",
+        data
+    );
+
+    const result =
+        document.getElementById("scanResult");
+
+    result.innerHTML = `
+
+        <div class="scan-success">
+
+            <h4>
+                ⏳ MENGECEK...
+            </h4>
+
+            <p>
+                <strong>${data.nama}</strong>
+            </p>
+
+            <p>
+                NIM: ${data.nim}
+            </p>
+
+        </div>
+
+    `;
+
+}
 
 async function simpanPresensi(data) {
 
