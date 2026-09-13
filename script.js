@@ -1161,20 +1161,72 @@ function tutupSesi() {
         return;
     }
 
-    const konfirmasi =
-        confirm(
-            "Apakah Anda yakin ingin menutup sesi presensi ini?"
-        );
+    const konfirmasi = confirm(
+        "Apakah Anda yakin ingin menutup sesi presensi ini?"
+    );
 
     if (!konfirmasi) {
         return;
     }
 
-    alert(
-        "Fungsi Tutup Sesi sedang diproses."
-    );
-}
+    const API_URL =
+        "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
 
+    fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+            action: "tutup_sesi",
+            mata_kuliah:
+                window.sesiAktif.mata_kuliah,
+            dosen:
+                window.sesiAktif.dosen,
+            pertemuan:
+                window.sesiAktif.pertemuan
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+
+        console.log("Hasil tutup sesi:", data);
+
+        if (!data.success) {
+            alert(
+                data.message ||
+                "Gagal menutup sesi."
+            );
+            return;
+        }
+
+        // Tandai sesi di website sebagai selesai
+        window.sesiAktif.status = "Selesai";
+
+        alert(
+            "Sesi presensi berhasil ditutup."
+        );
+
+        console.log(
+            "Sesi sekarang:",
+            window.sesiAktif
+        );
+    })
+    .catch(function(error) {
+
+        console.error(
+            "Gagal menutup sesi:",
+            error
+        );
+
+        alert(
+            "Terjadi kesalahan saat menutup sesi."
+        );
+    });
+}
 
 
 // ===============================
