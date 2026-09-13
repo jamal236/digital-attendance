@@ -911,8 +911,8 @@ function konfirmasiHadir() {
         script.remove();
 
 
-        const data =
-            window.mahasiswaTerpilih;
+        const mahasiswaData =
+                window.mahasiswaTerpilih;
 
         const API_URL =
             "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
@@ -927,17 +927,17 @@ function konfirmasiHadir() {
             waktu:
                 new Date().toISOString(),
 
-            nim:
-                data.nim,
+nim:
+    mahasiswaData.nim,
 
-            nama:
-                data.nama,
+nama:
+    mahasiswaData.nama,
 
-            kelas:
-                data.kelas,
+kelas:
+    mahasiswaData.kelas,
 
-            jurusan:
-                data.jurusan,
+jurusan:
+    mahasiswaData.jurusan,
 
             mata_kuliah:
                 sesiData.mata_kuliah || "",
@@ -1047,12 +1047,12 @@ function konfirmasiHadir() {
 
                     <p>
                         <strong>
-                            ${data.nama}
+                            ${mahasiswaData.nama}
                         </strong>
                     </p>
 
                     <p>
-                        NIM: ${data.nim}
+                        NIM: ${mahasiswaData.nim}
                     </p>
 
                     <p>
