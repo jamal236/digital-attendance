@@ -403,8 +403,103 @@ window.sesiAktif =
 
 }
 
+// ==========================================
+// CEK STATUS SESI
+// ==========================================
 
-        // ==========================================
+window.sesiDitutup = false;
+
+function cekStatusSesi() {
+
+    if (!window.sesiAktif) {
+        return;
+    }
+
+    const callbackName =
+        "cekStatusSesiCallback_" + Date.now();
+
+    const script =
+        document.createElement("script");
+
+    window[callbackName] = function(data) {
+
+        console.log(
+            "DATA STATUS SESI:",
+            data
+        );
+
+        const sesi = data.find(function(item) {
+
+            const mataKuliahSama =
+                String(item.mata_kuliah || "").trim() ===
+                String(window.sesiAktif.mata_kuliah || "").trim();
+
+            const dosenSama =
+                String(item.dosen || "").trim() ===
+                String(window.sesiAktif.dosen || "").trim();
+
+            const pertemuanData =
+                String(item.pertemuan || "")
+                    .replace(/[^0-9]/g, "");
+
+            const pertemuanSesi =
+                String(window.sesiAktif.pertemuan || "")
+                    .replace(/[^0-9]/g, "");
+
+            const pertemuanSama =
+                pertemuanData === pertemuanSesi;
+
+            return (
+                mataKuliahSama &&
+                dosenSama &&
+                pertemuanSama
+            );
+        });
+
+        if (
+            sesi &&
+            String(sesi.status).trim().toLowerCase() === "selesai"
+        ) {
+
+            window.sesiDitutup = true;
+
+            tampilkanHasil(
+                "error",
+                "Sesi Presensi Telah Ditutup. Waktu presensi untuk sesi ini telah berakhir. Silakan hubungi dosen terkait untuk konfirmasi kehadiran."
+            );
+
+            document.getElementById(
+                "studentStartBtn"
+            ).disabled = true;
+
+        }
+
+        delete window[callbackName];
+        script.remove();
+    };
+
+    script.src =
+        API_MAHASISWA +
+        "?action=pertemuan&callback=" +
+        callbackName;
+
+    script.onerror = function() {
+
+        console.error(
+            "Gagal mengecek status sesi."
+        );
+
+        delete window[callbackName];
+        script.remove();
+    };
+
+    document.body.appendChild(script);
+}
+
+cekStatusSesi();
+
+
+// ==========================================
 // TAMPILKAN SESI
 // ==========================================
 
@@ -724,7 +819,7 @@ if (window.sesiAktif) {
 
 
 
-       // ==========================================
+     // ==========================================
 // KONFIRMASI HADIR
 // ==========================================
 
@@ -734,180 +829,301 @@ function konfirmasiHadir() {
         return;
     }
 
-    const data = window.mahasiswaTerpilih;
+    if (!window.sesiAktif) {
+        tampilkanHasil(
+            "error",
+            "Sesi presensi tidak ditemukan."
+        );
+        return;
+    }
 
-    const API_URL =
-        "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
+    // ==========================================
+    // CEK STATUS SESI TERBARU
+    // ==========================================
+
+    const callbackName =
+        "konfirmasiStatusSesi_" + Date.now();
+
+    const script =
+        document.createElement("script");
+
+    window[callbackName] = function(data) {
+
+        const sesi = data.find(function(item) {
+
+            const mataKuliahSama =
+                String(item.mata_kuliah || "").trim() ===
+                String(window.sesiAktif.mata_kuliah || "").trim();
+
+            const dosenSama =
+                String(item.dosen || "").trim() ===
+                String(window.sesiAktif.dosen || "").trim();
+
+            const pertemuanData =
+                String(item.pertemuan || "")
+                    .replace(/[^0-9]/g, "");
+
+            const pertemuanSesi =
+                String(window.sesiAktif.pertemuan || "")
+                    .replace(/[^0-9]/g, "");
+
+            const pertemuanSama =
+                pertemuanData === pertemuanSesi;
+
+            return (
+                mataKuliahSama &&
+                dosenSama &&
+                pertemuanSama
+            );
+        });
 
 
-    // Data sesi dari QR
-    const sesiData = window.sesiAktif || {};
+        // ==========================================
+        // SESI SUDAH DITUTUP
+        // ==========================================
+
+        if (
+            sesi &&
+            String(sesi.status)
+                .trim()
+                .toLowerCase() === "selesai"
+        ) {
+
+            window.sesiDitutup = true;
+
+            tampilkanHasil(
+                "error",
+                "Sesi Presensi Telah Ditutup. Waktu presensi untuk sesi ini telah berakhir. Silakan hubungi dosen terkait untuk konfirmasi kehadiran."
+            );
+
+            delete window[callbackName];
+            script.remove();
+
+            return;
+        }
 
 
-    // Data presensi
-    const presensi = {
+        // ==========================================
+        // SESI MASIH AKTIF
+        // ==========================================
 
-        waktu: new Date().toISOString(),
-
-        nim: data.nim,
-
-        nama: data.nama,
-
-        kelas: data.kelas,
-
-        jurusan: data.jurusan,
-
-        mata_kuliah:
-            sesiData.mata_kuliah || "",
-
-        dosen:
-            sesiData.dosen || "",
-
-        pertemuan:
-            sesiData.pertemuan || "",
-
-        materi:
-            sesiData.materi || "",
-
-        jam:
-            sesiData.jam || "",
-
-        hari:
-            sesiData.hari || "",
-
-        ruang:
-            sesiData.ruang || "",
-
-        status: "HADIR"
-    };
+        delete window[callbackName];
+        script.remove();
 
 
-    // Kirim ke Google Sheet
-    fetch(API_URL, {
+        const data =
+            window.mahasiswaTerpilih;
 
-        method: "POST",
+        const API_URL =
+            "https://script.google.com/macros/s/AKfycbwQ0DBSXYLN7KlbkOBTzqna7iwdvlWuT716XJTAoZDso5Gb08wo4j-Ud48jqwUgY5m3qw/exec";
 
-        mode: "no-cors",
 
-        headers: {
-            "Content-Type":
-                "application/x-www-form-urlencoded"
-        },
+        const sesiData =
+            window.sesiAktif || {};
 
-        body:
 
-            "nim=" +
-            encodeURIComponent(
-                presensi.nim
-            ) +
+        const presensi = {
 
-            "&mata_kuliah=" +
-            encodeURIComponent(
-                presensi.mata_kuliah
-            ) +
+            waktu:
+                new Date().toISOString(),
 
-            "&dosen=" +
-            encodeURIComponent(
-                presensi.dosen
-            ) +
+            nim:
+                data.nim,
 
-            "&pertemuan=" +
-            encodeURIComponent(
-                presensi.pertemuan
-            ) +
+            nama:
+                data.nama,
 
-            "&materi=" +
-            encodeURIComponent(
-                presensi.materi
-            ) +
+            kelas:
+                data.kelas,
 
-            "&jam=" +
-            encodeURIComponent(
-                presensi.jam
-            ) +
+            jurusan:
+                data.jurusan,
 
-            "&hari=" +
-            encodeURIComponent(
-                presensi.hari
-            ) +
+            mata_kuliah:
+                sesiData.mata_kuliah || "",
 
-            "&ruang=" +
-            encodeURIComponent(
-                presensi.ruang
-            ) +
+            dosen:
+                sesiData.dosen || "",
 
-            "&status=" +
-            encodeURIComponent(
-                presensi.status
-            )
+            pertemuan:
+                sesiData.pertemuan || "",
 
-    })
+            materi:
+                sesiData.materi || "",
 
-    .then(function () {
+            jam:
+                sesiData.jam || "",
 
-        const result =
-            document.getElementById(
-                "studentResult"
+            hari:
+                sesiData.hari || "",
+
+            ruang:
+                sesiData.ruang || "",
+
+            status:
+                "HADIR"
+        };
+
+
+        // ==========================================
+        // KIRIM KE GOOGLE SHEET
+        // ==========================================
+
+        fetch(API_URL, {
+
+            method: "POST",
+
+            mode: "no-cors",
+
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
+
+            body:
+
+                "nim=" +
+                encodeURIComponent(
+                    presensi.nim
+                ) +
+
+                "&mata_kuliah=" +
+                encodeURIComponent(
+                    presensi.mata_kuliah
+                ) +
+
+                "&dosen=" +
+                encodeURIComponent(
+                    presensi.dosen
+                ) +
+
+                "&pertemuan=" +
+                encodeURIComponent(
+                    presensi.pertemuan
+                ) +
+
+                "&materi=" +
+                encodeURIComponent(
+                    presensi.materi
+                ) +
+
+                "&jam=" +
+                encodeURIComponent(
+                    presensi.jam
+                ) +
+
+                "&hari=" +
+                encodeURIComponent(
+                    presensi.hari
+                ) +
+
+                "&ruang=" +
+                encodeURIComponent(
+                    presensi.ruang
+                ) +
+
+                "&status=" +
+                encodeURIComponent(
+                    presensi.status
+                )
+
+        })
+
+        .then(function() {
+
+            const result =
+                document.getElementById(
+                    "studentResult"
+                );
+
+
+            result.innerHTML = `
+
+                <div class="scan-success">
+
+                    <h4>
+                        ✓ HADIR
+                    </h4>
+
+                    <p>
+                        <strong>
+                            ${data.nama}
+                        </strong>
+                    </p>
+
+                    <p>
+                        NIM: ${data.nim}
+                    </p>
+
+                    <p>
+                        ${presensi.mata_kuliah}
+                    </p>
+
+                    <p>
+                        Pertemuan ${presensi.pertemuan}
+                    </p>
+
+                    <p>
+                        Presensi berhasil dicatat.
+                    </p>
+
+                </div>
+
+            `;
+
+
+            console.log(
+                "PRESENSI TERKIRIM:",
+                presensi
+            );
+
+        })
+
+        .catch(function(error) {
+
+            console.error(
+                "Gagal mengirim presensi:",
+                error
             );
 
 
-        result.innerHTML = `
+            tampilkanHasil(
+                "error",
+                "Gagal mengirim presensi ke Google Sheet."
+            );
 
-            <div class="scan-success">
+        });
 
-                <h4>
-                    ✓ HADIR
-                </h4>
-
-                <p>
-                    <strong>
-                        ${data.nama}
-                    </strong>
-                </p>
-
-                <p>
-                    NIM: ${data.nim}
-                </p>
-
-                <p>
-                    ${presensi.mata_kuliah}
-                </p>
-
-                <p>
-                    Pertemuan ${presensi.pertemuan}
-                </p>
-
-                <p>
-                    Presensi berhasil dicatat.
-                </p>
-
-            </div>
-
-        `;
+    };
 
 
-        console.log(
-            "PRESENSI TERKIRIM:",
-            presensi
-        );
+    // ==========================================
+    // AMBIL STATUS PERTEMUAN TERBARU
+    // ==========================================
 
-    })
+    script.src =
+        API_MAHASISWA +
+        "?action=pertemuan&callback=" +
+        callbackName;
 
-    .catch(function (error) {
+
+    script.onerror = function() {
 
         console.error(
-            "Gagal mengirim presensi:",
-            error
+            "Gagal mengecek status sesi."
         );
 
+        delete window[callbackName];
+        script.remove();
 
         tampilkanHasil(
             "error",
-            "Gagal mengirim presensi ke Google Sheet."
+            "Gagal mengecek status sesi. Silakan coba lagi."
         );
+    };
 
-    });
 
+    document.body.appendChild(script);
 }
 
         // ==========================================
